@@ -1,7 +1,13 @@
+using Microsoft.EntityFrameworkCore;
+using PstuEshopWebApp.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<PstuEshopDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("PstuEshopDb")));
 
 var app = builder.Build();
 
