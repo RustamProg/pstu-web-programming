@@ -1,0 +1,52 @@
+﻿@model CatalogViewModel
+@{
+    ViewData["Title"] = "Каталог товаров";
+}
+
+<h1 class="mb-4">Каталог товаров</h1>
+
+<form id="catalog-filters"
+      asp-controller="Products"
+      asp-action="Index"
+      method="get"
+      class="row g-3 mb-4">
+
+    <div class="col-md-5">
+        <label asp-for="Category" class="form-label">
+            Категория
+        </label>
+
+        <select asp-for="Category"
+                asp-items="@(new SelectList(Model.Categories))"
+                class="form-select">
+            <option value="">Все категории</option>
+        </select>
+    </div>
+
+    <div class="col-md-5">
+        <label asp-for="Sort" class="form-label">
+            Сортировка
+        </label>
+
+        <select asp-for="Sort" class="form-select">
+            <option value="name_asc">По названию (A-Z)</option>
+            <option value="name_desc">По названию (Z-A)</option>
+            <option value="price_asc">Сначала дешёвые</option>
+            <option value="price_desc">Сначала дорогие</option>
+        </select>
+    </div>
+
+    <div class="col-md-2 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary w-100">
+            Применить
+        </button>
+    </div>
+</form>
+
+<div id="product-list">
+    <partial name="_ProductCards" model="Model.Products" />
+</div>
+
+@section Scripts {
+    <script src="~/js/catalog.js" asp-append-version="true"></script>
+}

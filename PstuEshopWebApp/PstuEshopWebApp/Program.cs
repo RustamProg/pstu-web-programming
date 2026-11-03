@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PstuEshopWebApp.Data;
+using PstuEshopWebApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,7 +8,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<PstuEshopDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("PstuEshopDb")));
+    options
+        .UseNpgsql(builder.Configuration.GetConnectionString("PstuEshopDb"))
+        .UseSeeding((context, _) => DataSeeder.Seed(context)));
+
+builder.Services.AddScoped<IProductsService, ProductsService>();
 
 var app = builder.Build();
 
