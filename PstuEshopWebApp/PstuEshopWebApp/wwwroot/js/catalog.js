@@ -9,7 +9,7 @@ async function updateCatalog() {
     currentRequest = new AbortController();
 
     // Собираем значения из HTML-формы
-    const params = new URLSearchParams(new FormData(form));
+    const params = new URLSearchParams(new FormData(form)); // Автоматически собирает все значения из формы и превращает их в query-parameters (в cshtml задаем через asp-for и тд)
 
     try {
         const response = await fetch(
@@ -27,7 +27,7 @@ async function updateCatalog() {
         // Заменяем старые карточки новыми
         productList.innerHTML = html;
 
-        // Сохраняем фильтры в адресной строке
+        // Сохраняем фильтры в адресной строке - чтобы можно было копировать или после нажатия f5 все осталось как было
         history.replaceState(
             null,
             "",

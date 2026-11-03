@@ -25,6 +25,7 @@ public class ProductsController(IProductsService productsService) : Controller
         return View(model);
     }
 
+    // Вызывается только из catalog.js
     [HttpGet]
     public async Task<IActionResult> List(string? category, string? sort, CancellationToken ct)
     {

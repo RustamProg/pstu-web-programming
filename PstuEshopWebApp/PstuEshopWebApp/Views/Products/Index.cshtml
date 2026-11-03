@@ -16,7 +16,7 @@
             Категория
         </label>
 
-        <select asp-for="Category"
+        <select asp-for="Category" @*Делает из значения query-parameter*@
                 asp-items="@(new SelectList(Model.Categories))"
                 class="form-select">
             <option value="">Все категории</option>
@@ -37,16 +37,21 @@
     </div>
 
     <div class="col-md-2 d-flex align-items-end">
-        <button type="submit" class="btn btn-primary w-100">
+        <button type="submit" class="btn btn-primary w-100"> @*В catalog.js подписываемся на submit этой формы*@
             Применить
         </button>
     </div>
 </form>
 
 <div id="product-list">
-    <partial name="_ProductCards" model="Model.Products" />
+    <partial name="_ProductCards" model="Model.Products" /> @*При первом заходе на страницу отображаем товары отсюда, затем уже ajax запросами заменяется фрагмент html*@
 </div>
 
+@*
+    Без этой секции, тоже будет работать, 
+    но submit будет просто перезагружать текущую страницу с применением фильтров.
+    Все будет работать, но будем видеть полную перезагрузку страницы, а не просто изменение списка
+*@
 @section Scripts {
     <script src="~/js/catalog.js" asp-append-version="true"></script>
 }
