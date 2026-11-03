@@ -6,4 +6,5 @@ public class CatalogViewModel
     public ICollection<string> Categories { get; set; } = [];
     public string? Category { get; set; }
     public string Sort { get; set; } = "name_asc";
+    public string? SelectedCityCode { get; set; }
 }

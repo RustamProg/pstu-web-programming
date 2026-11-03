@@ -12,6 +12,8 @@ public class ProductsController(IProductsService productsService) : Controller
     [HttpGet]
     public async Task<IActionResult> Index(string? category, string? sort, CancellationToken ct)
     {
+        var cityCode = Request.Cookies[CityOptions.CookieName];
+
         var model = new CatalogViewModel
         {
             Category = category,
@@ -19,7 +21,10 @@ public class ProductsController(IProductsService productsService) : Controller
                 ? sort
                 : ProductSortFields.NameAsc,
             Categories = await productsService.GetCategoriesAsync(ct),
-            Products = await productsService.GetProductsAsync(category, sort, ct)
+            Products = await productsService.GetProductsAsync(category, sort, ct),
+            SelectedCityCode = !string.IsNullOrWhiteSpace(cityCode) && CityOptions.Names.ContainsKey(cityCode)
+                ? cityCode
+                : null
         };
 
         return View(model);

@@ -1,11 +1,25 @@
 using Microsoft.EntityFrameworkCore;
 using PstuEshopWebApp.Data;
 using PstuEshopWebApp.Services;
+using PstuEshopWebApp.Sessions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromHours(2);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.SameSite = SameSiteMode.Lax;
+});
+
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddDbContext<PstuEshopDbContext>(options =>
     options
@@ -13,6 +27,8 @@ builder.Services.AddDbContext<PstuEshopDbContext>(options =>
         .UseSeeding((context, _) => DataSeeder.Seed(context)));
 
 builder.Services.AddScoped<IProductsService, ProductsService>();
+builder.Services.AddScoped<ICartStore, SessionCartStore>();
+builder.Services.AddScoped<ICartService, CartService>();
 
 var app = builder.Build();
 
@@ -26,6 +42,8 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
+
+app.UseSession();
 
 app.UseAuthorization();
 

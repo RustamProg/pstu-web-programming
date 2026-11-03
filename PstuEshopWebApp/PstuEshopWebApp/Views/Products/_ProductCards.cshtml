@@ -31,6 +31,12 @@ else
                         <p class="fw-bold">
                             @(product.Price.ToString("N2")) ₽
                         </p>
+
+                        <button type="button"
+                                class="btn btn-primary js-add-to-cart"
+                                data-product-id="@product.Id">
+                            Добавить в корзину
+                        </button>
                     </div>
                 </div>
             </div>

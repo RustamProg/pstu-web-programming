@@ -1,9 +1,87 @@
-﻿@model CatalogViewModel
+﻿@using PstuEshopWebApp.Constants
+
+@model CatalogViewModel
 @{
     ViewData["Title"] = "Каталог товаров";
 }
 
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+
 <h1 class="mb-4">Каталог товаров</h1>
+
+<p>
+    Корзина:
+    <span id="cart-count" class="badge bg-primary">0</span>
+    товаров
+</p>
+
+<input type="hidden"
+       id="cart-antiforgery-token"
+       value="@Antiforgery.GetAndStoreTokens(Context).RequestToken" />
+
+@if (Model.SelectedCityCode is not null)
+{
+    <p>
+        Ваш город:
+        <strong>
+            @CityOptions.Names[Model.SelectedCityCode]
+        </strong>
+
+        <button type="button"
+                class="btn btn-outline-secondary btn-sm"
+                data-bs-toggle="modal"
+                data-bs-target="#cityModal"> @*Открываем эту модалку, она ниже*@
+            Изменить
+        </button>
+    </p>
+}
+
+<div class="modal fade" id="cityModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <form asp-controller="City"
+                  asp-action="Select"
+                  method="post">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        Выберите город
+                    </h5>
+                </div>
+
+                <div class="modal-body">
+                    <select name="city"
+                            class="form-select"
+                            required>
+                        <option value="" selected disabled>
+                            Выберите город
+                        </option>
+
+                        @foreach (var city in CityOptions.Names)
+                        {
+                            <option value="@city.Key">
+                                @city.Value
+                            </option>
+                        }
+                    </select>
+
+                    <input type="hidden"
+                           name="returnUrl"
+                           value="@(Context.Request.Path.ToString() + Context.Request.QueryString.ToString())" />
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" @*Не писали javascript ajax запрос, поэтому по умолчанию приводит к перезагрузке страницы*@
+                            class="btn btn-primary">
+                        Сохранить
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
 
 <form id="catalog-filters"
       asp-controller="Products"
@@ -47,11 +125,29 @@
     <partial name="_ProductCards" model="Model.Products" /> @*При первом заходе на страницу отображаем товары отсюда, затем уже ajax запросами заменяется фрагмент html*@
 </div>
 
-@*
-    Без этой секции, тоже будет работать, 
+
+@section Scripts {
+    @*
+    Без этого скрипта, тоже будет работать, 
     но submit будет просто перезагружать текущую страницу с применением фильтров.
     Все будет работать, но будем видеть полную перезагрузку страницы, а не просто изменение списка
-*@
-@section Scripts {
+    *@
     <script src="~/js/catalog.js" asp-append-version="true"></script>
+
+    <script src="~/js/cart.js" asp-append-version="true"></script>
+
+    @if (Model.SelectedCityCode is null) @*Если город не выбран, то по умолчанию показываем окно выбора*@
+    {
+        <script>
+            const cityModal = new bootstrap.Modal(
+                document.getElementById("cityModal"),
+                {
+                    backdrop: "static", @*Нельзя закрыть нажатием на фон*@
+                    keyboard: false @*Нельзя закрыть нажатием на esc*@
+                }
+            );
+
+            cityModal.show();
+        </script>
+    }
 }
