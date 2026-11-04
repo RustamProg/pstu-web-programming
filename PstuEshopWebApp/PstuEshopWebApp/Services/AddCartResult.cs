@@ -2,9 +2,9 @@
 
 public class AddCartResult
 {
-    public required int Quantity { get; set; }
-    public required AddCartStatus Status { get; set; }
-    public string? ErrorMessage { get; set; }
+    public required int Quantity { get; init; }
+    public required AddCartStatus Status { get; init; }
+    public string? ErrorMessage { get; init; }
 }
 
 public enum AddCartStatus

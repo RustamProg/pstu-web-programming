@@ -29,6 +29,7 @@ builder.Services.AddDbContext<PstuEshopDbContext>(options =>
 builder.Services.AddScoped<IProductsService, ProductsService>();
 builder.Services.AddScoped<ICartStore, SessionCartStore>();
 builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<IOrdersService, OrdersService>();
 
 var app = builder.Build();
 

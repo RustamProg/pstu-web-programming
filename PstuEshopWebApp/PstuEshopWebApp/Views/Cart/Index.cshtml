@@ -6,6 +6,20 @@
 
 <h1 class="mb-4">Корзина</h1>
 
+@if (TempData["OrderSuccess"] is string success)
+{
+    <div class="alert alert-success">
+        @success
+    </div>
+}
+
+@if (TempData["CartError"] is string error)
+{
+    <div class="alert alert-danger">
+        @error
+    </div>
+}
+
 @if (Model.Items.Count == 0)
 {
     <div class="alert alert-info">
@@ -88,6 +102,16 @@ else
         Итого:
         @(Model.TotalPrice.ToString("N2")) ₽
     </h4>
+
+    <form asp-controller="Orders"
+          asp-action="CreateOrder"
+          method="post"
+          class="mt-3">
+
+        <button type="submit" class="btn btn-success">
+            Оформить заказ
+        </button>
+    </form>
 }
 
 <a asp-controller="Products"

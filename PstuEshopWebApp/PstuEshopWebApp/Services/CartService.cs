@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PstuEshopWebApp.Constants;
 using PstuEshopWebApp.Data;
 using PstuEshopWebApp.Mappers;
 using PstuEshopWebApp.Models;
@@ -8,8 +9,6 @@ namespace PstuEshopWebApp.Services;
 
 public class CartService(ICartStore cartStore, PstuEshopDbContext dbContext) : ICartService
 {
-    private const int MaxQuantity = 10;
-
     public async Task<int> GetCountAsync(CancellationToken ct = default)
     {
         var cart = await cartStore.GetAsync(ct);
@@ -39,13 +38,13 @@ public class CartService(ICartStore cartStore, PstuEshopDbContext dbContext) : I
         {
             var item = cart[index];
 
-            if (item.Quantity < 1 || item.Quantity >= MaxQuantity)
+            if (item.Quantity < 1 || item.Quantity >= CartOptions.MaxQuantity)
             {
                 return new AddCartResult
                 {
                     Quantity = item.Quantity,
                     Status = AddCartStatus.LimitExceeded,
-                    ErrorMessage = $"Нельзя добавить больше {MaxQuantity} единиц товара"
+                    ErrorMessage = $"Нельзя добавить больше {CartOptions.MaxQuantity} единиц товара"
                 };
             }
 
@@ -79,6 +78,7 @@ public class CartService(ICartStore cartStore, PstuEshopDbContext dbContext) : I
 
         var productIds = cart
             .Select(x => x.ProductId)
+            .Distinct()
             .ToList();
 
         var products = await dbContext.Products
@@ -105,7 +105,7 @@ public class CartService(ICartStore cartStore, PstuEshopDbContext dbContext) : I
 
     public async Task<bool> SetExactQuantityAsync(long productId, int quantity, CancellationToken ct = default)
     {
-        if (quantity is < 1 or > MaxQuantity)
+        if (quantity is < 1 or > CartOptions.MaxQuantity)
             return false;
 
         var cart = await cartStore.GetAsync(ct);
