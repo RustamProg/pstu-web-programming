@@ -44,7 +44,7 @@ public class CartService(ICartStore cartStore, PstuEshopDbContext dbContext) : I
                 {
                     Quantity = item.Quantity,
                     Status = AddCartStatus.LimitExceeded,
-                    ErrorMessage = $"Нельзя добавить больше {CartOptions.MaxQuantity} единиц товара"
+                    ErrorMessage = $"Нельзя добавить больше {CartOptions.MaxQuantity} единиц одного и того же товара"
                 };
             }
 

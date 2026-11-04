@@ -1,20 +1,19 @@
-import { useState } from 'react'
-import './App.css'
+import { Link, Routes, Route } from "react-router";
+import CatalogPage from "./pages/CatalogPage";
+import CartPage from "./pages/CartPage";
 
 export default function App() {
-  const [count, setCount] = useState(1)
+    return (
+        <div className="container py-4">
+            <nav className="d-flex gap-3 mb-4">
+                <Link to="/">Каталог</Link>
+                <Link to="/cart">Корзина</Link>
+            </nav>
 
-  const addProduct = () => setCount(prev => prev + 1)
-
-  return (
-    <main>
-      <h1>PSTU EShop React App</h1>
-
-      <p>Товаров в корзине: {count}</p>
-
-      <button onClick={addProduct}>
-        Добавить товар
-      </button>
-    </main>
-  )
+            <Routes>
+                <Route path="/" element={<CatalogPage />} />
+                <Route path="/cart" element={<CartPage />} />
+            </Routes>
+        </div>
+    );
 }

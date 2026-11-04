@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PstuEshopWebApp.Constants;
 using PstuEshopWebApp.Requests;
 using PstuEshopWebApp.Services;
 
@@ -32,5 +33,37 @@ public class CartApiController(ICartService cartService) : ControllerBase
             return Conflict(new { Message = result.ErrorMessage });
 
         return Ok(new { totalQuantity = result.Quantity });
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetCart(CancellationToken ct)
+    {
+        var cart = await cartService.GetCartViewModelAsync(ct);
+
+        return Ok(cart);
+    }
+
+    [HttpPut("items/{productId:long}")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> UpdateQuantity(long productId, [FromBody] UpdateQuantityRequest request, CancellationToken ct)
+    {
+        if (productId <= 0 || request.Quantity is < 1 or > CartOptions.MaxQuantity)
+            return BadRequest("Некорректное количество");
+
+        var updated = await cartService.SetExactQuantityAsync(productId, request.Quantity, ct);
+
+        if (!updated)
+            return NotFound(new { message = "Товар отсутствует в корзине" });
+
+        return Ok(await cartService.GetCartViewModelAsync(ct));
+    }
+
+    [HttpDelete("items/{productId:long}")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> RemoveItem(long productId, CancellationToken ct)
+    {
+        await cartService.RemoveAsync(productId, ct);
+
+        return Ok(await cartService.GetCartViewModelAsync(ct));
     }
 }

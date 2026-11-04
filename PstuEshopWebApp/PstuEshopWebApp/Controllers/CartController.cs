@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PstuEshopWebApp.Constants;
 using PstuEshopWebApp.Services;
 
 namespace PstuEshopWebApp.Controllers;
@@ -17,7 +18,7 @@ public class CartController(ICartService cartService) : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> UpdateQuantity([FromForm] long productId, [FromForm] int quantity, CancellationToken ct)
     {
-        if (productId <= 0 || quantity is < 1 or > 99)
+        if (productId <= 0 || quantity is < 1 or > CartOptions.MaxQuantity)
             return BadRequest("Некорректное количество");
 
         var updated = await cartService.SetExactQuantityAsync(productId, quantity, ct);
