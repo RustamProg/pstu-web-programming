@@ -1,0 +1,97 @@
+﻿@model PstuEshopWebApp.Models.CartViewModel
+
+@{
+    ViewData["Title"] = "Корзина";
+}
+
+<h1 class="mb-4">Корзина</h1>
+
+@if (Model.Items.Count == 0)
+{
+    <div class="alert alert-info">
+        Корзина пуста.
+    </div>
+}
+else
+{
+    <table class="table align-middle">
+        <thead>
+            <tr>
+                <th>Товар</th>
+                <th>Цена</th>
+                <th>Количество</th>
+                <th>Сумма</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>@item.Product.Name</td>
+
+                    <td>
+                        @(item.Product.Price.ToString("N2")) ₽
+                    </td>
+
+                    <td>
+                        <form asp-controller="Cart"
+                              asp-action="UpdateQuantity"
+                              method="post"
+                              class="d-flex gap-2">
+
+                            <input type="hidden"
+                                   name="productId"
+                                   value="@item.Product.Id" />
+
+                            <input type="number"
+                                   name="quantity"
+                                   value="@item.Quantity"
+                                   min="1"
+                                   max="10"
+                                   class="form-control"
+                                   style="width: 90px" />
+
+                            <button type="submit"
+                                    class="btn btn-outline-primary">
+                                Сохранить
+                            </button>
+                        </form>
+                    </td>
+
+                    <td>
+                        @((item.Quantity * item.Product.Price).ToString("N2")) ₽
+                    </td>
+
+                    <td>
+                        <form asp-controller="Cart"
+                              asp-action="Remove"
+                              method="post">
+
+                            <input type="hidden"
+                                   name="productId"
+                                   value="@item.Product.Id" />
+
+                            <button type="submit"
+                                    class="btn btn-outline-danger">
+                                Удалить
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h4 class="text-end">
+        Итого:
+        @(Model.TotalPrice.ToString("N2")) ₽
+    </h4>
+}
+
+<a asp-controller="Products"
+   asp-action="Index"
+   class="btn btn-secondary mt-3">
+    Вернуться в каталог
+</a>

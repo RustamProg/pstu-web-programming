@@ -23,11 +23,14 @@ public class CartApiController(ICartService cartService) : ControllerBase
         if (request.ProductId <= 0)
             return BadRequest("Invalid product ID");
 
-        var count = await cartService.AddAsync(request.ProductId, ct);
+        var result = await cartService.AddAsync(request.ProductId, ct);
 
-        if (count is null)
-            return NotFound();
+        if (result.Status == AddCartStatus.NotFound)
+            return NotFound(new { Message = result.ErrorMessage });
 
-        return Ok(new { totalQuantity = count.Value });
+        if (result.Status == AddCartStatus.LimitExceeded)
+            return Conflict(new { Message = result.ErrorMessage });
+
+        return Ok(new { totalQuantity = result.Quantity });
     }
 }

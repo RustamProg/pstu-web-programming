@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using PstuEshopWebApp.Constants;
-using PstuEshopWebApp.Data;
 using PstuEshopWebApp.Models;
 using PstuEshopWebApp.Services;
 

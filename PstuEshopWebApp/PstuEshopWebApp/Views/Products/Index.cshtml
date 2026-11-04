@@ -10,9 +10,14 @@
 <h1 class="mb-4">Каталог товаров</h1>
 
 <p>
-    Корзина:
-    <span id="cart-count" class="badge bg-primary">0</span>
-    товаров
+    <a asp-controller="Cart"
+       asp-action="Index"
+       class="btn btn-outline-primary">
+
+        Корзина:
+        <span id="cart-count" class="badge bg-primary">0</span>
+        товаров
+    </a>
 </p>
 
 <input type="hidden"

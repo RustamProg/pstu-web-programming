@@ -8,7 +8,7 @@ namespace PstuEshopWebApp.Services;
 
 public class ProductsService(PstuEshopDbContext dbContext) : IProductsService
 {
-    public async Task<ICollection<ProductViewModel>> GetProductsAsync(string? category, string? sort, CancellationToken ct)
+    public async Task<ICollection<ProductViewModel>> GetProductsAsync(string? category, string? sort, CancellationToken ct = default)
     {
         var query = dbContext.Products.AsNoTracking();
 
@@ -41,7 +41,7 @@ public class ProductsService(PstuEshopDbContext dbContext) : IProductsService
             .ToListAsync(ct);
     }
 
-    public async Task<ICollection<string>> GetCategoriesAsync(CancellationToken ct)
+    public async Task<ICollection<string>> GetCategoriesAsync(CancellationToken ct = default)
     {
         return await dbContext.Products
             .Select(p => p.Category)
@@ -50,7 +50,7 @@ public class ProductsService(PstuEshopDbContext dbContext) : IProductsService
             .ToListAsync(ct);
     }
 
-    public async Task<ICollection<ProductViewModel>> GetAllProductsAsync(CancellationToken ct)
+    public async Task<ICollection<ProductViewModel>> GetAllProductsAsync(CancellationToken ct = default)
     {
         return await dbContext.Products
             .Select(p => p.MapToViewModel())

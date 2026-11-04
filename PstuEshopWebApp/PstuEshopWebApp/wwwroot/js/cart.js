@@ -40,15 +40,18 @@
                 })
             });
 
-            if (!response.ok)
-                throw new Error(`HTTP ${response.status}`);
+            if (!response.ok) {
+                const error = await response.json().catch(() => null);
+
+                throw new Error(error?.message ?? `HTTP ${response.status}`);
+            }
 
             const data = await response.json();
 
             counter.textContent = data.totalQuantity;
         } catch (error) {
             console.error(error);
-            alert("Не удалось добавить товар");
+            alert(error.message);
         } finally {
             button.disabled = false;
         }
